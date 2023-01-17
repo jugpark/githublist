@@ -9,20 +9,39 @@ const Container = (props) => {
         // repo: null,
         owner: "octokit",
         repo: "rest.js",
+        per_page: 20,
     });
-    const [searchedRepo, setSearchedRepo] = useState([])
+    const [repoList, setRepoList] = useState([])
     const [registeredRepo, setRegisterdRepo] = useState(JSON.parse(localStorage.getItem("registeredRepo")));
 
     console.log(registeredRepo)
 
     //검색된 레포지토리가 있는지 확인
     const repositoryFetch = async () => {
-        // await octokit.request(`GET /repos/${searchObj.owner}/${searchObj.repo}/issues`).then((res) => {
-        //     setSearchedRepo(res.data)
-        //     console.log(res.data)
-        // }).catch((error) => {
-        //     console.log(error.response.data.message)
-        // })
+        const combinedArray = [];
+        for (let i = 0; i < registeredRepo.length; i++) {
+            await octokit.paginate(octokit.rest.issues.listForRepo, searchObj)
+                .then((res) => {
+                    const result = res || [];
+                    if (result.length > 0) {
+                        result.forEach((issue) => {
+                            combinedArray.push({
+                                title: issue.title,
+                                repoName: registeredRepo[i].repo
+                            })
+                        })
+                        console.log(combinedArray)
+                        setRepoList(combinedArray)
+                    } else {
+                        console.log("존재하지 않는 레포지토리 입니다.")
+                    }
+                }).catch((error) => {
+                    console.log(error.response.data.message)
+                })
+        }
+    }
+
+    const repositoryCheck = async () => {
         await octokit.paginate(octokit.rest.issues.listForRepo, searchObj)
             .then((res) => {
                 const result = res || [];
@@ -42,7 +61,9 @@ const Container = (props) => {
             setSearchObj={setSearchObj}
             registeredRepo={registeredRepo}
             setRegisterdRepo={setRegisterdRepo}
+            repoList={repoList}
             repositoryFetch={repositoryFetch}
+            repositoryCheck={repositoryCheck}
         />
     );
 };

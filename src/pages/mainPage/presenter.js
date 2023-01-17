@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 
 const Presenter = (props) => {
@@ -6,6 +6,7 @@ const Presenter = (props) => {
         <>
             <Backgroud>
                 <Search {...props}></Search>
+                <List {...props}></List>
             </Backgroud>
         </>
     );
@@ -13,94 +14,23 @@ const Presenter = (props) => {
 
 export default Presenter;
 
-const Search = (props) => {
-
-    const { searchObj, setSearchObj, repositoryFetch, registeredRepo, setRegisterdRepo, } = props
-    const [displayFlag, setDisplayFlag] = useState(false)
-
-    return (
-        <Fragment>
-            <SearchSection>
-                <InputSection>
-                    <SearchBox>
-                        <Label>user</Label>
-                        <Input
-                            value={searchObj.owner}
-                            onChange={(e) => {
-                                setSearchObj({ ...searchObj, owner: e.target.value })
-                            }}
-                        />
-                    </SearchBox>
-                    <SearchBox>
-                        <Label>repo</Label>
-                        <Input
-                            value={searchObj.repo}
-                            onChange={(e) => {
-                                setSearchObj({ ...searchObj, repo: e.target.value })
-                            }}
-                        />
-                    </SearchBox>
-                    <SelectionBox>
-                        <TittleBox>
-                            Selected Repository List<span onClick={() => { setDisplayFlag(!displayFlag) }} style={{ color: "#D1D1D1" }}>{`>`}</span></TittleBox>
-                        <FullBox display={displayFlag}>
-                            <HalfBox middleLine={true}>
-                                <SelectBox
-                                    onClick={() => {
-                                        const coppiedRegisteredRepo = [...registeredRepo]
-                                        coppiedRegisteredRepo.push(searchObj)
-                                        let result = [...new Set(coppiedRegisteredRepo)]
-                                        if (result.length < 5) {
-                                            setRegisterdRepo(result)
-                                            localStorage.setItem("registeredRepo", JSON.stringify(result));
-                                        }
-                                        else {
-                                            alert("등록할 수 있는 레포지토리의 최대개수는 4개 까지입니다.")
-                                            return;
-                                        }
-                                    }}>{searchObj.owner} / {searchObj.repo}{<span style={{ color: "#A6CDFF" }}>{`>`}</span>}</SelectBox>
-                            </HalfBox>
-                            <HalfBox>
-                                {registeredRepo?.map((e) => {
-                                    return (
-                                        <SelectedBox
-                                            onClick={() => {
-                                                const coppiedRegisteredRepo = [...registeredRepo]
-                                                const filtered = coppiedRegisteredRepo.filter((value) => { return value != e })
-                                                let result = [...new Set(filtered)]
-                                                setRegisterdRepo(result)
-                                                localStorage.setItem("registeredRepo", JSON.stringify(result));
-                                            }}> {e.owner} / {e.repo}{<span style={{ color: "#FF0000" }}>{`X`}</span>}
-                                        </SelectedBox>
-                                    )
-                                })}
-                            </HalfBox>
-                        </FullBox>
-                    </SelectionBox>
-                </InputSection>
-                <SearchButton
-                    onClick={() => { repositoryFetch() }}
-                >조회</SearchButton>
-            </SearchSection>
-        </Fragment>
-    )
-};
-
 const Backgroud = styled.div`
     background-color: white;
     height: 100vh;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 `;
 
 const SearchSection = styled.div`
     display: flex;
     background-color: white;
     width: 100%;
-    height: 65px;
+    height: 80px;
     justify-content: space-between;
     box-sizing: border-box;
     position: fixed;
-    margin-top: 20px;
+    margin-botton: 20px;
     padding: 0px 20px 0px 20px;
 `;
 
@@ -147,7 +77,8 @@ const FullBox = styled.div`
         return display ? `display: flex;` : `display: none;`
     }} 
     justify-content: center;
-    height: 250px
+    height: 250px;
+    position: relative;
 `;
 
 const TittleBox = styled.div`
@@ -200,3 +131,108 @@ const SelectedBox = styled.div`
     justify-content: space-between;
     cursor: pointer;
 `;
+
+const Table = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const Header = styled.div`
+    
+`;
+
+const TableBody = styled.div`
+
+`;
+
+const TableRow = styled.div`
+    border: 1px solid #D0D4D9;
+`;
+
+const Search = (props) => {
+
+    const { searchObj, setSearchObj, repositoryFetch, registeredRepo, setRegisterdRepo, } = props
+    const [displayFlag, setDisplayFlag] = useState(false)
+
+    return (
+        <SearchSection>
+            <InputSection>
+                <SearchBox>
+                    <Label>user</Label>
+                    <Input
+                        value={searchObj.owner}
+                        onChange={(e) => {
+                            setSearchObj({ ...searchObj, owner: e.target.value })
+                        }}
+                    />
+                </SearchBox>
+                <SearchBox>
+                    <Label>repo</Label>
+                    <Input
+                        value={searchObj.repo}
+                        onChange={(e) => {
+                            setSearchObj({ ...searchObj, repo: e.target.value })
+                        }}
+                    />
+                </SearchBox>
+                <SelectionBox>
+                    <TittleBox>
+                        Selected Repository List<span onClick={() => { setDisplayFlag(!displayFlag) }} style={{ color: "#D1D1D1" }}>{`>`}</span></TittleBox>
+                    <FullBox display={displayFlag}>
+                        <HalfBox middleLine={true}>
+                            <SelectBox
+                                onClick={() => {
+                                    const coppiedRegisteredRepo = [...registeredRepo]
+                                    coppiedRegisteredRepo.push(searchObj)
+                                    console.log(coppiedRegisteredRepo)
+                                    let result = [...new Set(coppiedRegisteredRepo)]
+                                    console.log(result)
+                                    if (result.length < 5) {
+                                        setRegisterdRepo(result)
+                                        localStorage.setItem("registeredRepo", JSON.stringify(result));
+                                    }
+                                    else {
+                                        alert("등록할 수 있는 레포지토리의 최대개수는 4개 까지입니다.")
+                                        return;
+                                    }
+                                }}>{searchObj.owner} / {searchObj.repo}{<span style={{ color: "#A6CDFF" }}>{`>`}</span>}</SelectBox>
+                        </HalfBox>
+                        <HalfBox>
+                            {registeredRepo?.map((e) => {
+                                return (
+                                    <SelectedBox
+                                        onClick={() => {
+                                            const coppiedRegisteredRepo = [...registeredRepo]
+                                            const filtered = coppiedRegisteredRepo.filter((value) => { return value !== e })
+                                            let result = [...new Set(filtered)]
+                                            setRegisterdRepo(result)
+                                            localStorage.setItem("registeredRepo", JSON.stringify(result));
+                                        }}> {e.owner} / {e.repo}{<span style={{ color: "#FF0000" }}>{`X`}</span>}
+                                    </SelectedBox>
+                                )
+                            })}
+                        </HalfBox>
+                    </FullBox>
+                </SelectionBox>
+            </InputSection>
+            <SearchButton
+                onClick={() => { repositoryFetch() }}
+            >조회</SearchButton>
+        </SearchSection>
+    )
+};
+
+const List = (props) => {
+    const { repoList } = props
+    return (
+        <Table>
+        <Header>1</Header>
+        <TableBody>
+            {repoList.map((row) => {
+                return (
+                <TableRow>{row.title}</TableRow>
+            )})}
+        </TableBody>
+        </Table>
+    )
+}
