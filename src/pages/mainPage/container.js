@@ -5,24 +5,34 @@ import { octokit } from "../../authentication/authentication";
 
 const Container = (props) => {
     const [searchObj, setSearchObj] = useState({
-        owner: "octocat",
-        repo: "Spoon-Knife",
+        owner: null,
+        repo: null,
     });
+    const [searchedRepo, setSearchedRepo] = useState([])
+    const [registeredRepo, setRegisterdRepo] = useState([]);
+
+    // owner: "octocat",
+    // repo: "Spoon-Knife",
+
+    console.log(searchObj)
+    console.log(searchedRepo)
 
     const repositoryFetch = async () => {
         await octokit.request(`GET /repos/${searchObj.owner}/${searchObj.repo}/issues`).then((res) => {
-            console.log(res)
+            setSearchedRepo(res.data)
+            console.log(res.data)
+        }).catch((error) => {
+            console.log(error.response.data.message)
         })
     }
-
-    useEffect(() => {
-        authentication();
-    }, [])
 
     return (
         <Presenter
             searchObj={searchObj}
             setSearchObj={setSearchObj}
+            registeredRepo={registeredRepo}
+            setRegisterdRepo={setRegisterdRepo}
+            repositoryFetch={repositoryFetch}
         />
     );
 };

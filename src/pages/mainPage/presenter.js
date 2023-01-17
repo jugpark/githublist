@@ -5,7 +5,7 @@ const Presenter = (props) => {
     return (
         <>
             <Backgroud>
-                <Search></Search>
+                <Search {...props}></Search>
             </Backgroud>
         </>
     );
@@ -14,26 +14,75 @@ const Presenter = (props) => {
 export default Presenter;
 
 const Search = (props) => {
+    const { searchObj, setSearchObj, repositoryFetch } = props
     return (
         <SearchSection>
-            <SearchButton>123</SearchButton>
+            <InputSection>
+                <SearchBox>
+                    <Label>user</Label>
+                    <Input
+                        onChange={(e) => {
+                            setSearchObj({ ...searchObj, owner: e.target.value })
+                        }}
+                    />
+                </SearchBox>
+                <SearchBox>
+                    <Label>repo</Label>
+                    <Input
+                        onChange={(e) => {
+                            setSearchObj({ ...searchObj, repo: e.target.value })
+                        }}
+                    />
+                </SearchBox>
+            </InputSection>
+            <SearchButton
+                onClick={() => { repositoryFetch() }}
+            >조회</SearchButton>
         </SearchSection>
     )
 }
 
 const Backgroud = styled.div`
-    background-color: yellowgreen;
+    background-color: white;
     height: 100vh;
-    overflow: auto;
     width: 100%;
+`;
+
+const SearchSection = styled.div`
+    display: flex;
+    background-color: white;
+    height: 65px;
+    justify-content: space-between;
+    box-sizing: border-box;
+    position: relative;
+    margin-top: 20px;
+    padding: 0px 20px 0px 20px;
+`;
+
+const InputSection = styled.div`
+    display: flex;
+`;
+
+const SearchBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 `
- 
+
+const Label = styled.label`
+    display: flex;
+    justify-content: center;
+    height: 30px;
+    align-items: center;
+`;
+
+const Input = styled.input`
+    width: 200px;
+    height: 70px;
+    background-color: rebeccapurple;
+`;
+
 const SearchButton = styled.button`
     width: 100px;
-    height: 100px;
-`
-const SearchSection = styled.div`
-    width: 100%;
-    background-color: white;
-    height: 100px;
-`
+    height: auto;
+`;

@@ -8,6 +8,7 @@ export const octokit = new Octokit({
 export const authentication = async () => {
     await octokit.request('GET /user', {}).then((res) => {
         if (res.status == 200) {
+            console.log(res)
             return true;
         }
         else {
