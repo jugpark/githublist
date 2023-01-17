@@ -24,14 +24,13 @@ const Backgroud = styled.div`
 
 const SearchSection = styled.div`
     display: flex;
-    background-color: white;
+    background-color: #0E1117;
     width: 100%;
     height: 80px;
     justify-content: space-between;
     box-sizing: border-box;
     position: fixed;
-    margin-botton: 20px;
-    padding: 0px 20px 0px 20px;
+    padding: 10px 20px 10px 20px;
 `;
 
 const InputSection = styled.div`
@@ -41,6 +40,7 @@ const InputSection = styled.div`
 const SearchBox = styled.div`
     display: flex;
     flex-direction: column;
+    margin-left: 20px;
 `
 
 const Label = styled.label`
@@ -48,28 +48,39 @@ const Label = styled.label`
     height: 20px;
     align-items: center;
     padding-left: 10px;
+    color: #C8D1D9;
+    font-size: 18px;
+    font-weight: 500;
 `;
 
 const Input = styled.input`
     width: 200px;
     flex: 1;
-    background-color: white;
+    background-color: #21262C;
     border: 1px solid black;
     padding-left: 10px;
+    color: #C8D1D9;
+    font-size: 17px;
+    font-weight: 400;
+    border-radius: 10px;
 `;
 
 const SearchButton = styled.button`
-    width: 100px;
-    height: auto;
+    width: 70px;
+    flex: 1;
+    color: #C8D1D9;
+    font-size: 17px;
+    font-weight: 700;
+    border: 0px;
+    background-color: transparent;
 `;
 
 const SelectionBox = styled.div`
-    border: 1px solid #D0D4D9;
-    width: 400px;
+    width: 700px;
     box-sizing: border-box;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    margin-left: 50px;
+    margin-left: 100px;
 `;
 
 const FullBox = styled.div`
@@ -77,13 +88,16 @@ const FullBox = styled.div`
         return display ? `display: flex;` : `display: none;`
     }} 
     justify-content: center;
-    height: 250px;
+    height: 200px;
     position: relative;
+    background-color: #21262C;
+    border: 1px solid #0E1117;
+    border-top: 0px;
 `;
 
 const TittleBox = styled.div`
     border-bottom: 1px solid rgb(208, 212, 217);
-    height: 50px;
+    height: 35px;
     display: flex;
     align-items: center;
     padding: 10px;
@@ -95,7 +109,7 @@ const TittleBox = styled.div`
 const HalfBox = styled.div`
     width: 50%;
     overflow: auto;
-    padding: 5px;
+    padding: 15px 10px 0px 10px;
     &::-webkit-scrollbar {
         display: none;
         -ms-overflow-style: none;
@@ -135,10 +149,15 @@ const SelectedBox = styled.div`
 const Table = styled.div`
     display: flex;
     flex-direction: column;
+    margin-top: 80px;
 `;
 
 const Header = styled.div`
-    
+    background-color: gray;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
 `;
 
 const TableBody = styled.div`
@@ -175,49 +194,52 @@ const Search = (props) => {
                         }}
                     />
                 </SearchBox>
-                <SelectionBox>
-                    <TittleBox>
-                        Selected Repository List<span onClick={() => { setDisplayFlag(!displayFlag) }} style={{ color: "#D1D1D1" }}>{`>`}</span></TittleBox>
-                    <FullBox display={displayFlag}>
-                        <HalfBox middleLine={true}>
-                            <SelectBox
-                                onClick={() => {
-                                    const coppiedRegisteredRepo = [...registeredRepo]
-                                    coppiedRegisteredRepo.push(searchObj)
-                                    console.log(coppiedRegisteredRepo)
-                                    let result = [...new Set(coppiedRegisteredRepo)]
-                                    console.log(result)
-                                    if (result.length < 5) {
+                <SearchBox>
+                    <Label />
+                    <SearchButton
+                        onClick={() => { repositoryFetch() }}
+                    >Search</SearchButton>
+                </SearchBox>
+            </InputSection>
+            <SelectionBox>
+                <TittleBox>
+                    Selected Repository List<span onClick={() => { setDisplayFlag(!displayFlag) }} style={{ color: "#D1D1D1" }}>{!displayFlag ? `▼` : `▲ `}</span></TittleBox>
+                <FullBox display={displayFlag}>
+                    <HalfBox middleLine={true}>
+                        <SelectBox
+                            onClick={() => {
+                                const coppiedRegisteredRepo = [...registeredRepo]
+                                coppiedRegisteredRepo.push(searchObj)
+                                console.log(coppiedRegisteredRepo)
+                                let result = [...new Set(coppiedRegisteredRepo)]
+                                console.log(result)
+                                if (result.length < 5) {
+                                    setRegisterdRepo(result)
+                                    localStorage.setItem("registeredRepo", JSON.stringify(result));
+                                }
+                                else {
+                                    alert("등록할 수 있는 레포지토리의 최대개수는 4개 까지입니다.")
+                                    return;
+                                }
+                            }}>{searchObj.owner} / {searchObj.repo}{<span style={{ color: "#A6CDFF" }}>{`>`}</span>}</SelectBox>
+                    </HalfBox>
+                    <HalfBox>
+                        {registeredRepo?.map((e) => {
+                            return (
+                                <SelectedBox
+                                    onClick={() => {
+                                        const coppiedRegisteredRepo = [...registeredRepo]
+                                        const filtered = coppiedRegisteredRepo.filter((value) => { return value !== e })
+                                        let result = [...new Set(filtered)]
                                         setRegisterdRepo(result)
                                         localStorage.setItem("registeredRepo", JSON.stringify(result));
-                                    }
-                                    else {
-                                        alert("등록할 수 있는 레포지토리의 최대개수는 4개 까지입니다.")
-                                        return;
-                                    }
-                                }}>{searchObj.owner} / {searchObj.repo}{<span style={{ color: "#A6CDFF" }}>{`>`}</span>}</SelectBox>
-                        </HalfBox>
-                        <HalfBox>
-                            {registeredRepo?.map((e) => {
-                                return (
-                                    <SelectedBox
-                                        onClick={() => {
-                                            const coppiedRegisteredRepo = [...registeredRepo]
-                                            const filtered = coppiedRegisteredRepo.filter((value) => { return value !== e })
-                                            let result = [...new Set(filtered)]
-                                            setRegisterdRepo(result)
-                                            localStorage.setItem("registeredRepo", JSON.stringify(result));
-                                        }}> {e.owner} / {e.repo}{<span style={{ color: "#FF0000" }}>{`X`}</span>}
-                                    </SelectedBox>
-                                )
-                            })}
-                        </HalfBox>
-                    </FullBox>
-                </SelectionBox>
-            </InputSection>
-            <SearchButton
-                onClick={() => { repositoryFetch() }}
-            >조회</SearchButton>
+                                    }}> {e.owner} / {e.repo}{<span style={{ color: "#FF0000" }}>{`X`}</span>}
+                                </SelectedBox>
+                            )
+                        })}
+                    </HalfBox>
+                </FullBox>
+            </SelectionBox>
         </SearchSection>
     )
 };
@@ -226,13 +248,14 @@ const List = (props) => {
     const { repoList } = props
     return (
         <Table>
-        <Header>1</Header>
-        <TableBody>
-            {repoList.map((row) => {
-                return (
-                <TableRow>{row.title}</TableRow>
-            )})}
-        </TableBody>
+            <Header>Issue Title</Header>
+            <TableBody>
+                {repoList.map((row) => {
+                    return (
+                        <TableRow>{row.title}</TableRow>
+                    )
+                })}
+            </TableBody>
         </Table>
     )
 }
