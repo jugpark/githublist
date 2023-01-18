@@ -1,5 +1,8 @@
 import React, { Fragment, useState } from "react";
 import styled from "styled-components";
+import Pagination from "../../common/component/paging";
+import returnDateyyyymmdd from "../../common/functions/returnDate.js"
+import githubImage from "../../assets/githubImage.png"
 
 const Presenter = (props) => {
     return (
@@ -62,7 +65,7 @@ const Input = styled.input`
     padding-left: 10px;
     color: #C8D1D9;
     font-size: 17px;
-    font-weight: 400;
+    font-weight: 500;
     border-radius: 10px;
 `;
 
@@ -156,7 +159,6 @@ const Table = styled.div`
 `;
 
 const TableBody = styled.div`
-
 `;
 
 const TableRow = styled.div`
@@ -166,17 +168,18 @@ const TableRow = styled.div`
     flex-direction: column;
     // align-items: center;
     padding-left: 20px;
+    cursor: pointer;
 `;
 
 const RowTitle = styled.div`
-    color: #C8D1D9;
-    font-size: 21px;
-    font-weight: 500;
+    color: #F3F4F6;
+    font-size: 22px;
+    font-weight: 600;
     height: 50%;
 `;
 
 const RowRepoName = styled.div`
-    color: #C8D1D9;
+    color: #C4C8CE;
     font-size: 19px;
     font-weight: 600;
     height: 50%;
@@ -192,8 +195,9 @@ const Search = (props) => {
     return (
         <SearchSection>
             <InputSection>
+                <img src={githubImage} alt="" style={{ height: 50, width: 50, marginTop: 5 }} />
                 <SearchBox>
-                    <Label>user</Label>
+                    <Label><span style={{ color: "#E95141" }}>*</span><span style={{ marginLeft: 5 }}>User</span></Label>
                     <Input
                         value={searchObj.owner}
                         onChange={(e) => {
@@ -202,7 +206,7 @@ const Search = (props) => {
                     />
                 </SearchBox>
                 <SearchBox>
-                    <Label>repo</Label>
+                    <Label><span style={{ color: "#E95141" }}>*</span><span style={{ marginLeft: 5 }}>Repo</span></Label>
                     <Input
                         value={searchObj.repo}
                         onChange={(e) => {
@@ -262,18 +266,31 @@ const Search = (props) => {
 
 const List = (props) => {
     const { repoList } = props
+    const [pagingList, setPagingList] = useState(repoList)
+
+    console.log(pagingList)
+
     return (
         <Table>
             <TableBody>
-                {repoList.map((row) => {
+                {pagingList?.map((row) => {
                     return (
-                        <TableRow>
-                            <RowRepoName>{row.repoName}</RowRepoName>
+                        <TableRow
+                            onClick={() => {
+                                window.open(row.url)
+                            }}
+                        >
+                            <RowRepoName><span>{row.repoName}</span><span style={{ marginLeft: 30 }}>{`Issue Created at : ${returnDateyyyymmdd(row.createdDate)}`}</span></RowRepoName>
                             <RowTitle>{row.title}</RowTitle>
                         </TableRow>
                     )
                 })}
             </TableBody>
+            <Pagination
+                repoList={repoList}
+                setPagingList={setPagingList}
+                pagingSize={10}
+            />
         </Table>
     )
 }
