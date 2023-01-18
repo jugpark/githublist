@@ -15,7 +15,7 @@ const Presenter = (props) => {
 export default Presenter;
 
 const Backgroud = styled.div`
-    background-color: white;
+    background-color: #0E1117;
     height: 100vh;
     width: 100%;
     display: flex;
@@ -31,6 +31,7 @@ const SearchSection = styled.div`
     box-sizing: border-box;
     position: fixed;
     padding: 10px 20px 10px 20px;
+    border-bottom: 1px solid rgb(208, 212, 217);
 `;
 
 const InputSection = styled.div`
@@ -73,6 +74,7 @@ const SearchButton = styled.button`
     font-weight: 700;
     border: 0px;
     background-color: transparent;
+    cursor: pointer;
 `;
 
 const SelectionBox = styled.div`
@@ -150,14 +152,7 @@ const Table = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 80px;
-`;
-
-const Header = styled.div`
-    background-color: gray;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    padding-left: 10px;
+    background-color: #0E1117;
 `;
 
 const TableBody = styled.div`
@@ -165,7 +160,28 @@ const TableBody = styled.div`
 `;
 
 const TableRow = styled.div`
-    border: 1px solid #D0D4D9;
+    border-bottom: 1px solid #D0D4D9;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+    padding-left: 20px;
+`;
+
+const RowTitle = styled.div`
+    color: #C8D1D9;
+    font-size: 21px;
+    font-weight: 500;
+    height: 50%;
+`;
+
+const RowRepoName = styled.div`
+    color: #C8D1D9;
+    font-size: 19px;
+    font-weight: 600;
+    height: 50%;
+    display: flex;
+    align-items: center;
 `;
 
 const Search = (props) => {
@@ -248,11 +264,13 @@ const List = (props) => {
     const { repoList } = props
     return (
         <Table>
-            <Header>Issue Title</Header>
             <TableBody>
                 {repoList.map((row) => {
                     return (
-                        <TableRow>{row.title}</TableRow>
+                        <TableRow>
+                            <RowRepoName>{row.repoName}</RowRepoName>
+                            <RowTitle>{row.title}</RowTitle>
+                        </TableRow>
                     )
                 })}
             </TableBody>

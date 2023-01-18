@@ -16,7 +16,7 @@ const Container = (props) => {
 
     console.log(registeredRepo)
 
-    //검색된 레포지토리가 있는지 확인
+    //레포지토리 목록
     const repositoryFetch = async () => {
         const combinedArray = [];
         for (let i = 0; i < registeredRepo.length; i++) {
@@ -41,6 +41,7 @@ const Container = (props) => {
         }
     }
 
+    //검색된 레포지토리가 있는지 확인
     const repositoryCheck = async () => {
         await octokit.paginate(octokit.rest.issues.listForRepo, searchObj)
             .then((res) => {
