@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Presenter from "./presenter";
-import { authentication } from "../../authentication/authentication";
 import { octokit } from "../../authentication/authentication";
 
 const Container = (props) => {
@@ -10,11 +9,9 @@ const Container = (props) => {
         owner: "octokit",
         repo: "rest.js",
     });
+    const [validObj, setValidObj] = useState({})
     const [repoList, setRepoList] = useState([])
-    const [pagingRepoList, setpagingRepoList] = useState([])
-    const [registeredRepo, setRegisterdRepo] = useState(JSON.parse(localStorage.getItem("registeredRepo")));
-
-    console.log(repoList)
+    const [registeredRepo, setRegisterdRepo] = useState(JSON.parse(localStorage.getItem("registeredRepo")) || []);
 
     //레포지토리 목록
     const repositoryFetch = async () => {
@@ -32,14 +29,12 @@ const Container = (props) => {
                                 url: issue.html_url
                             })
                         })
-                        setRepoList(combinedArray)
-                    } else {
-                        console.log("존재하지 않는 레포지토리 입니다.")
                     }
                 }).catch((error) => {
-                    console.log(error.response.data.message)
+                    alert(error.response.data.message)
                 })
         }
+        setRepoList(combinedArray)
     }
 
     //검색된 레포지토리가 있는지 확인
@@ -48,29 +43,29 @@ const Container = (props) => {
             .then((res) => {
                 const result = res || [];
                 if (result.length > 0) {
-                    console.log(result)
+                    setValidObj(searchObj)
+                    alert("Exist!")
                 } else {
-                    console.log("존재하지 않는 레포지토리 입니다.")
+                    alert("존재하지 않는 레포지토리 입니다.")
                 }
             }).catch((error) => {
-                console.log(error.response.data.message)
+                setValidObj({})
+                alert(error.response.data.message)
             })
     }
 
-    useEffect(() => {
-        if(repoList.length > 0) {
-
-        }
-    }, [repoList.length])
-
     return (
         <Presenter
+            //obj
+            validObj={validObj}
             searchObj={searchObj}
             setSearchObj={setSearchObj}
             registeredRepo={registeredRepo}
             setRegisterdRepo={setRegisterdRepo}
             repoList={repoList}
             setRepoList={setRepoList}
+
+            //function
             repositoryFetch={repositoryFetch}
             repositoryCheck={repositoryCheck}
         />

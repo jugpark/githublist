@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Pagination from "../../common/component/paging";
 import returnDateyyyymmdd from "../../common/functions/returnDate.js"
@@ -162,13 +162,14 @@ const TableBody = styled.div`
 `;
 
 const TableRow = styled.div`
-    border-bottom: 1px solid #D0D4D9;
+    border: 1px solid #D0D4D9;
     height: 100px;
     display: flex;
     flex-direction: column;
     // align-items: center;
-    padding-left: 20px;
+    padding-left: 80px;
     cursor: pointer;
+    border-radius: 20px;
 `;
 
 const RowTitle = styled.div`
@@ -189,7 +190,7 @@ const RowRepoName = styled.div`
 
 const Search = (props) => {
 
-    const { searchObj, setSearchObj, repositoryFetch, registeredRepo, setRegisterdRepo, } = props
+    const { validObj, searchObj, setSearchObj, repositoryCheck, repositoryFetch, registeredRepo, setRegisterdRepo, } = props
     const [displayFlag, setDisplayFlag] = useState(false)
 
     return (
@@ -217,49 +218,52 @@ const Search = (props) => {
                 <SearchBox>
                     <Label />
                     <SearchButton
-                        onClick={() => { repositoryFetch() }}
-                    >Search</SearchButton>
+                        onClick={() => { repositoryCheck() }}
+                    >RepoSearch</SearchButton>
                 </SearchBox>
             </InputSection>
-            <SelectionBox>
-                <TittleBox>
-                    Selected Repository List<span onClick={() => { setDisplayFlag(!displayFlag) }} style={{ color: "#D1D1D1" }}>{!displayFlag ? `▼` : `▲ `}</span></TittleBox>
-                <FullBox display={displayFlag}>
-                    <HalfBox middleLine={true}>
-                        <SelectBox
-                            onClick={() => {
-                                const coppiedRegisteredRepo = [...registeredRepo]
-                                coppiedRegisteredRepo.push(searchObj)
-                                console.log(coppiedRegisteredRepo)
-                                let result = [...new Set(coppiedRegisteredRepo)]
-                                console.log(result)
-                                if (result.length < 5) {
-                                    setRegisterdRepo(result)
-                                    localStorage.setItem("registeredRepo", JSON.stringify(result));
-                                }
-                                else {
-                                    alert("등록할 수 있는 레포지토리의 최대개수는 4개 까지입니다.")
-                                    return;
-                                }
-                            }}>{searchObj.owner} / {searchObj.repo}{<span style={{ color: "#A6CDFF" }}>{`>`}</span>}</SelectBox>
-                    </HalfBox>
-                    <HalfBox>
-                        {registeredRepo?.map((e) => {
-                            return (
-                                <SelectedBox
-                                    onClick={() => {
-                                        const coppiedRegisteredRepo = [...registeredRepo]
-                                        const filtered = coppiedRegisteredRepo.filter((value) => { return value !== e })
-                                        let result = [...new Set(filtered)]
+            <div style={{ display: "flex" }}>
+                <SelectionBox>
+                    <TittleBox>
+                        Selected Repository List<span onClick={() => { setDisplayFlag(!displayFlag) }} style={{ color: "#D1D1D1" }}>{!displayFlag ? `▼` : `▲ `}</span></TittleBox>
+                    <FullBox display={displayFlag}>
+                        <HalfBox middleLine={true}>
+                            {validObj.owner && validObj.repo ? <SelectBox
+                                onClick={() => {
+                                    const coppiedRegisteredRepo = [...registeredRepo]
+                                    coppiedRegisteredRepo.push(validObj)
+                                    let result = [...new Set(coppiedRegisteredRepo)]
+                                    if (result.length < 5) {
                                         setRegisterdRepo(result)
                                         localStorage.setItem("registeredRepo", JSON.stringify(result));
-                                    }}> {e.owner} / {e.repo}{<span style={{ color: "#FF0000" }}>{`X`}</span>}
-                                </SelectedBox>
-                            )
-                        })}
-                    </HalfBox>
-                </FullBox>
-            </SelectionBox>
+                                    }
+                                    else {
+                                        alert("등록할 수 있는 레포지토리의 최대개수는 4개 까지입니다.")
+                                        return;
+                                    }
+                                }}>{validObj.owner} / {validObj.repo}{<span style={{ color: "#A6CDFF" }}>{`>`}</span>}</SelectBox> : ""}
+                        </HalfBox>
+                        <HalfBox>
+                            {registeredRepo?.map((e) => {
+                                return (
+                                    <SelectedBox
+                                        onClick={() => {
+                                            const coppiedRegisteredRepo = [...registeredRepo]
+                                            const filtered = coppiedRegisteredRepo.filter((value) => { return value !== e })
+                                            let result = [...new Set(filtered)]
+                                            setRegisterdRepo(result)
+                                            localStorage.setItem("registeredRepo", JSON.stringify(result));
+                                        }}> {e.owner} / {e.repo}{<span style={{ color: "#FF0000" }}>{`X`}</span>}
+                                    </SelectedBox>
+                                )
+                            })}
+                        </HalfBox>
+                    </FullBox>
+                </SelectionBox>
+                <SearchButton style={{ margin: "25px 30px 0px 20px" }}
+                    onClick={() => { repositoryFetch() }}
+                >IssueSearch</SearchButton>
+            </div>
         </SearchSection>
     )
 };
@@ -268,29 +272,30 @@ const List = (props) => {
     const { repoList } = props
     const [pagingList, setPagingList] = useState(repoList)
 
-    console.log(pagingList)
-
     return (
         <Table>
             <TableBody>
                 {pagingList?.map((row) => {
                     return (
-                        <TableRow
+                        <div
+                            style={{ padding: 20 }}
                             onClick={() => {
                                 window.open(row.url)
                             }}
                         >
-                            <RowRepoName><span>{row.repoName}</span><span style={{ marginLeft: 30 }}>{`Issue Created at : ${returnDateyyyymmdd(row.createdDate)}`}</span></RowRepoName>
-                            <RowTitle>{row.title}</RowTitle>
-                        </TableRow>
+                            <TableRow>
+                                <RowRepoName><span>{row.repoName}</span><span style={{ marginLeft: 30 }}>{`Issue Created at : ${returnDateyyyymmdd(row.createdDate)}`}</span></RowRepoName>
+                                <RowTitle>{row.title}</RowTitle>
+                            </TableRow>
+                        </div>
                     )
                 })}
             </TableBody>
-            <Pagination
-                repoList={repoList}
-                setPagingList={setPagingList}
-                pagingSize={10}
-            />
+                <Pagination
+                    repoList={repoList}
+                    setPagingList={setPagingList}
+                    pagingSize={10}
+                />
         </Table>
     )
 }
