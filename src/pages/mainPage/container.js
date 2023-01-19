@@ -11,6 +11,8 @@ const Container = (props) => {
     const [repoList, setRepoList] = useState([])
     const [registeredRepo, setRegisterdRepo] = useState(JSON.parse(localStorage.getItem("registeredRepo")) || []);
 
+    console.log(registeredRepo)
+
     //레포지토리 목록
     const repositoryFetch = async () => {
         const combinedArray = [];
@@ -37,7 +39,8 @@ const Container = (props) => {
 
     //검색된 레포지토리가 있는지 확인
     const repositoryCheck = async () => {
-        await octokit.paginate(octokit.rest.issues.listForRepo, searchObj)
+        if(searchObj.owner && searchObj.repo) {
+            await octokit.paginate(octokit.rest.issues.listForRepo, searchObj)
             .then((res) => {
                 const result = res || [];
                 if (result.length > 0) {
@@ -50,6 +53,9 @@ const Container = (props) => {
                 setValidObj({})
                 alert(error.response.data.message)
             })
+        } else {
+            alert("Owner and RepoName is required field.")
+        }
     }
 
     return (
