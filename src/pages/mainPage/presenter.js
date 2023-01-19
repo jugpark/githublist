@@ -156,9 +156,16 @@ const Table = styled.div`
     flex-direction: column;
     margin-top: 80px;
     background-color: #0E1117;
+    flex: 1;
+    overflow-y: hidden;
 `;
 
 const TableBody = styled.div`
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        display: none;
+        -ms-overflow-style: none;
+    }
 `;
 
 const TableRow = styled.div`
@@ -224,8 +231,8 @@ const Search = (props) => {
             </InputSection>
             <div style={{ display: "flex" }}>
                 <SelectionBox>
-                    <TittleBox>
-                        Selected Repository List<span onClick={() => { setDisplayFlag(!displayFlag) }} style={{ color: "#D1D1D1" }}>{!displayFlag ? `▼` : `▲ `}</span></TittleBox>
+                    <TittleBox onClick={() => { setDisplayFlag(!displayFlag) }}>
+                        Selected Repository List<span style={{ color: "#D1D1D1" }}>{!displayFlag ? `▼` : `▲ `}</span></TittleBox>
                     <FullBox display={displayFlag}>
                         <HalfBox middleLine={true}>
                             {validObj.owner && validObj.repo ? <SelectBox
@@ -280,7 +287,11 @@ const List = (props) => {
                         <div
                             style={{ padding: 20 }}
                             onClick={() => {
-                                window.open(row.url)
+                                let openapprove = window.confirm("Are you sure to move in?")
+                                if (openapprove) {
+                                    window.open(row.url)
+                                } else
+                                    return;
                             }}
                         >
                             <TableRow>
@@ -291,11 +302,11 @@ const List = (props) => {
                     )
                 })}
             </TableBody>
-                <Pagination
-                    repoList={repoList}
-                    setPagingList={setPagingList}
-                    pagingSize={10}
-                />
+            <Pagination
+                repoList={repoList}
+                setPagingList={setPagingList}
+                pagingSize={10}
+            />
         </Table>
     )
 }

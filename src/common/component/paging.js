@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const PaginationSection = styled.div`
-    
     ${({ display }) => {
         return display ? `display: flex` : `display: none`
     }};
@@ -13,6 +12,9 @@ const PaginationSection = styled.div`
 `;
 
 const Button = styled.button`
+    ${({ display }) => {
+        return display ? `display: flex` : `display: none`
+    }};
     background-color: transparent;
     color: rgb(208, 212, 217);
     border: 0;
@@ -20,6 +22,7 @@ const Button = styled.button`
     font-size: 15px;
     font-weight: 700;
     padding: 10px;
+    align-items: center;
     ${({ current }) => {
         return current ? `border-bottom: 1px solid rgb(208, 212, 217)` : null;
     }}
@@ -51,26 +54,20 @@ const Pagination = ({ repoList, pagingSize, setPagingList }) => {
         if (currentPage !== null) {
             setPagingList(pagingArrayList[currentPage])
         }
-    }, [currentPage])
-
-    useEffect(() => {
-        if (currentPage % 5 == 0) {
+        if (currentPage % 5 === 0) {
             setPagingObj({ ...pagingObj, start: currentPage })
         }
     }, [currentPage])
 
-    console.log("pagingObj", pagingObj)
-    console.log("currentPage", currentPage)
-
     return (
         <PaginationSection display={pagingArrayList.length > 0 ? true : false}>
-            <Button onClick={() => { setCurrentPage(pagingObj.start - 5) }}>{`<`}</Button>
+            <Button display={pagingObj.start !== 0 ? true : false} onClick={() => { setCurrentPage(pagingObj.start - 5) }}>{`<`}</Button>
             {Array(5).fill().map((value, index) => {
                 return (
-                    <Button onClick={() => { setCurrentPage(pagingObj.start + index) }}>{pagingObj.start + index + 1}</Button>
+                    <Button current={currentPage === pagingObj.start + index ? true : false} display={pagingObj.start + index + 1 <= pagingObj.maxPage ? true : false} onClick={() => { setCurrentPage(pagingObj.start + index) }}>{pagingObj.start + index + 1}</Button>
                 )
             })}
-            <Button onClick={() => { setCurrentPage(pagingObj.start + 5) }}>{`>`}</Button>
+            <Button display={pagingObj.start + 1 < pagingObj.maxPage ? true : false} onClick={() => { setCurrentPage(pagingObj.start + 5) }}>{`>`}</Button>
         </PaginationSection>
     );
 };
