@@ -28,7 +28,7 @@ const Button = styled.button`
     }}
 `;
 
-const Pagination = ({ repoList, pagingSize, setPagingList }) => {
+const Pagination = ({ repoList, pagingSize, setPagingList, pageCount }) => {
     const [pagingArrayList, setPadingArrayList] = useState([]);
     const [pagingObj, setPagingObj] = useState({
         start: 0
@@ -54,20 +54,20 @@ const Pagination = ({ repoList, pagingSize, setPagingList }) => {
         if (currentPage !== null) {
             setPagingList(pagingArrayList[currentPage])
         }
-        if (currentPage % 5 === 0) {
+        if (currentPage % pageCount === 0) {
             setPagingObj({ ...pagingObj, start: currentPage })
         }
     }, [currentPage])
 
     return (
         <PaginationSection display={pagingArrayList.length > 0 ? true : false}>
-            <Button display={pagingObj.start !== 0 ? true : false} onClick={() => { setCurrentPage(pagingObj.start - 5) }}>{`<`}</Button>
-            {Array(5).fill().map((value, index) => {
+            <Button display={pagingObj.start !== 0 ? true : false} onClick={() => { setCurrentPage(pagingObj.start - pageCount) }}>{`<`}</Button>
+            {Array(pageCount).fill().map((value, index) => {
                 return (
                     <Button current={currentPage === pagingObj.start + index ? true : false} display={pagingObj.start + index + 1 <= pagingObj.maxPage ? true : false} onClick={() => { setCurrentPage(pagingObj.start + index) }}>{pagingObj.start + index + 1}</Button>
                 )
             })}
-            <Button display={pagingObj.start + 1 < pagingObj.maxPage ? true : false} onClick={() => { setCurrentPage(pagingObj.start + 5) }}>{`>`}</Button>
+            <Button display={pagingObj.start + 1 < pagingObj.maxPage ? true : false} onClick={() => { setCurrentPage(pagingObj.start + pageCount) }}>{`>`}</Button>
         </PaginationSection>
     );
 };

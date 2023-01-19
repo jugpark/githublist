@@ -4,10 +4,8 @@ import { octokit } from "../../authentication/authentication";
 
 const Container = (props) => {
     const [searchObj, setSearchObj] = useState({
-        // owner: null,
-        // repo: null,
-        owner: "octokit",
-        repo: "rest.js",
+        owner: null,
+        repo: null,
     });
     const [validObj, setValidObj] = useState({})
     const [repoList, setRepoList] = useState([])

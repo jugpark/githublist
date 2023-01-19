@@ -245,7 +245,7 @@ const Search = (props) => {
                                         localStorage.setItem("registeredRepo", JSON.stringify(result));
                                     }
                                     else {
-                                        alert("등록할 수 있는 레포지토리의 최대개수는 4개 까지입니다.")
+                                        alert("Max registered repository amount is 4.")
                                         return;
                                     }
                                 }}>{validObj.owner} / {validObj.repo}{<span style={{ color: "#A6CDFF" }}>{`>`}</span>}</SelectBox> : ""}
@@ -306,6 +306,7 @@ const List = (props) => {
                 repoList={repoList}
                 setPagingList={setPagingList}
                 pagingSize={10}
+                pageCount={5}
             />
         </Table>
     )
