@@ -70,12 +70,14 @@ const Input = styled.input`
 `;
 
 const SearchButton = styled.button`
-    width: 70px;
+    width: auto;
     flex: 1;
     color: #C8D1D9;
     font-size: 17px;
     font-weight: 700;
-    border: 0px;
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 0px 10px 0px 10px;
     background-color: transparent;
     cursor: pointer;
 `;
